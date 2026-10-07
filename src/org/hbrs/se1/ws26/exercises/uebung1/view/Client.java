@@ -1,5 +1,5 @@
 package org.hbrs.se1.ws26.exercises.uebung1.view;
-import org.hbrs.se1.ws26.exercises.uebung1.control.ConcreteCreator;
+import org.hbrs.se1.ws26.exercises.uebung1.control.GermanTranslatorFactory;
 import org.hbrs.se1.ws26.exercises.uebung1.control.Translator;
 
 public class Client {
@@ -18,7 +18,7 @@ public class Client {
 			// aufgerufen werden.
 			//
 			// Strenge Implementierung (nur) gegen das Interface Translator gewuenscht!
-			 Translator translator = new ConcreteCreator().factoryMethod();
+			 Translator translator = new GermanTranslatorFactory().factoryMethod();
 
 			 System.out.println("Das Ergebnis der Berechnung: " + translator.translateNumber(aNumber)
 					  );
