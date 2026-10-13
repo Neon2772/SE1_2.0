@@ -8,7 +8,7 @@ public class GermanTranslator implements Translator {
 	 * Methode zur Übersetzung einer Zahl in eine String-Repraesentation
 	 */
 	 public String translateNumber(int number) {
-		 String result = "";
+		 String result;
 		 if (number > 0 && number < 13) {
 			 return numberHelper(number);
 		 } else if (number == 16) {

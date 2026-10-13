@@ -14,11 +14,11 @@ public class Client {
 	 */
 		 void display( int aNumber ){
 			// In dieser Methode soll die Methode translateNumber
-			// mit dem übergegebenen Wert der Variable aNumber
+			// mit dem übergebenen Wert der Variable aNumber
 			// aufgerufen werden.
 			//
 			// Strenge Implementierung (nur) gegen das Interface Translator gewuenscht!
-			 Translator translator = new GermanTranslatorFactory().factoryMethod();
+			 Translator translator = new GermanTranslatorFactory().createTranslator();
 
 			 System.out.println("Das Ergebnis der Berechnung: " + translator.translateNumber(aNumber)
 					  );
