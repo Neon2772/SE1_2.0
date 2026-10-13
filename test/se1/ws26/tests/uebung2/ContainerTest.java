@@ -77,4 +77,17 @@ public class ContainerTest {
         c.addMember(m1);
         assertThrows(ContainerException.class, () -> c.addMember(m1));
     }
+
+    @Test
+    void testDeleteNonexistentMember() throws ContainerException {
+        ConcreteMember m1 = new ConcreteMember();
+        assertEquals("Member mit der ID " + m1.getID() + " ist nicht Teil der Liste!", c.deleteMember(m1));
+    }
+
+    @Test
+    void testDeleteMember() throws ContainerException {
+        ConcreteMember m1 = new ConcreteMember();
+        c.addMember(m1);
+        assertEquals("Member mit der ID " + m1.getID() + " wurde gelöscht!", c.deleteMember(m1));
+    }
 }

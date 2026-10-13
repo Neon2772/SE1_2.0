@@ -20,11 +20,15 @@ public class Container {
         }
     }
 
-    public void deleteMember(Member member){
+    public String deleteMember(Member member){
         if(member == null){
             throw new NullPointerException("Member must not be null");
-        } else {
+        } else if(this.members.contains(member)){
             members.remove(member);
+            return "Member mit der ID " +  member.getID() + " wurde gelöscht!";
+        } else {
+            System.out.println(member.getID() + " ist nicht Teil der Liste!");
+            return "Member mit der ID " + member.getID() + " ist nicht Teil der Liste!";
         }
     }
 
