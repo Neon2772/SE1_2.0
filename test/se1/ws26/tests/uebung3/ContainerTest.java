@@ -1,62 +1,96 @@
 package se1.ws26.tests.uebung3;
 
 
+import org.hbrs.se1.ws26.exercises.uebung3.persistence.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import java.util.List;
 
-class ContainerTest {
+import static org.junit.jupiter.api.Assertions.*;
+
+public class ContainerTest {
+
+    private Container container;
 
     @BeforeEach
-    void setUp() {
-        // Hier muss der Container einmalig als Singleton instanziiert werden.
+    void setup() {
+        container = Container.getContainerInstance();
+        container.deleteAllMembers();
+        container.setPersistenceStrategy(null);
     }
 
+    /**
+     * Testfall 1: Keine Strategie gesetzt → store() soll Exception werfen
+     */
     @Test
-    void testMongoDBNotImplementedSolution() {
-        // Set a strategy, which has not been implemented
-        // container.setPersistenceStrategie( new PersistenceStrategyMongoDB<Member>() );
-
-        // Testing store
-        // Hinweis: Beim Aufruf der Methoden store() oder load() muss eine Exception vom Typ
-        // PersistenceException zurückgegeben werden. Der ExceptionType lautet ImplementationNotAvailable
-        // Die Message (abrufbar mit der Methode e.getMessage() ) muss einen eindeutigen Text haben, z.B.:
-        // assertEquals( e.getMessage() , "MongoDB is not implemented!"  );
+    void testNoStrategySet() {
+        assertThrows(PersistenceException.class, () -> {
+            container.store();
+        });
     }
 
+    /**
+     * Testfall 2: Verwendung der MongoDB-Strategie → sollte Exception werfen
+     */
     @Test
-    void testNoStrategeySet() {
-        //
-            // container.setPersistenceStrategie(null);
-            // container.store();
-        // } catch (PersistenceException e) {
-            // Bitte auch hier die Message und den ExceptionType prüfen.
-        // }
+    void testMongoDBStrategyNotImplemented() {
+        container.setPersistenceStrategy(new PersistenceStrategyMongoDB<>());
+        assertThrows(PersistenceException.class, () -> {
+            container.store();
+        });
+        assertThrows(PersistenceException.class, () -> {
+            container.load();
+        });
     }
 
+    /**
+     * Testfall 3: Fehlerhafte Location (ein Directory) → sollte Exception werfen
+     */
     @Test
-    void testWrongLocationOfFile() {
-        // try {
-           //  PersistenceStrategyStream<Member> strat = new PersistenceStrategyStream<Member>();
-            // FileStreams do not like directories, so try this out ;-)
-            // strat.setLocation("/Users/saschaalda/tmp");
-            // container.setPersistenceStrategie( strat );
-            // container.store();
+    void testWrongLocationForStream() throws ContainerException {
+        PersistenceStrategyStream<Member> strategy = new PersistenceStrategyStream<>();
+        strategy.setLocation("/tmp/"); // ungültig, da ein Directory
+        container.setPersistenceStrategy(strategy);
 
-        // } catch (PersistenceException e) {
-            // Auch hier diverse Assertions bringen, um die Nachricht und den ExceptionType zu testen.
-        // }
+        try {
+            container.addMember(new ConcreteMember());
+        } catch (ContainerException e) {
+            throw new ContainerException(0);
+        }
+
+
+        assertThrows(PersistenceException.class, () -> {
+            container.store();
+        });
     }
 
+    /**
+     * Testfall 4: Round-Trip – speichern und laden
+     */
     @Test
-    void testStoreDeleteAndLoad() {
-        // Testen Sie folgenden RoundTrip:
-        // 1. Lösche alle Member-Objekte (Sicher ist sicher! Dazu die Methode deleteAllMember implementieren!)
-        // 2. Setzen der Strategie
-        // 3. Hinzufügen eines Member-Objekts
-        // 4. Abspeichern
-        // 5. Löschen des Member-Objekts
-        // 6. Laden
-        // Die Zustandsänderungen mittels der size() bitte stets testen!
-    }
+    void testRoundTrip() throws PersistenceException, ContainerException {
+        // Strategie setzen
+        PersistenceStrategyStream<Member> strategy = new PersistenceStrategyStream<>();
+        strategy.setLocation("testObjects.ser");
+        container.setPersistenceStrategy(strategy);
 
+        // Container leeren, Member hinzufügen
+        container.deleteAllMembers();
+        Member m1 = new ConcreteMember();
+        container.addMember(m1);
+
+        // Schritt 1: speichern
+        container.store();
+        assertEquals(1, container.size());
+
+        // Schritt 2: Container leeren
+        container.deleteAllMembers();
+        assertEquals(0, container.size());
+
+        // Schritt 3: laden
+        container.load();
+        List<Member> list = container.getCurrentList();
+        assertEquals(1, list.size());
+        assertEquals(m1.getID(), list.get(0).getID());
+    }
 }
