@@ -1,4 +1,4 @@
-package org.hbrs.se1.ws26.exercises.uebung4.prototype;
+package org.hbrs.se1.ws26.exercises.uebung4.prototype.improvements.model;
 
 public class ContainerException extends Exception {
 	

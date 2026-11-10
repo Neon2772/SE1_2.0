@@ -29,7 +29,7 @@ public class PersistenceStrategyStream<E> implements PersistenceStrategy<E> {
         }
 //         Try-with-Resources
 //         Öffnet Ressourcen im Try(...) und schließt sie automatisch.
-//         Dadurch ist kein Finaly{} nötig, in dem die Ressource geschlössen wird
+//         Dadurch ist kein Finally{} nötig, in dem die Ressource geschlössen wird
 //         Ist weniger Fehleranfällig
         try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(location))) {
             oos.writeObject(member);

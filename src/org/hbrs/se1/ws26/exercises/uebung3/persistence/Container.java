@@ -3,7 +3,7 @@ package org.hbrs.se1.ws26.exercises.uebung3.persistence;
 import java.util.ArrayList;
 
 public class Container {
-    ArrayList<Member> members;
+    private ArrayList<Member> members;
     // Singleton Pattern, um immer nur eine Instanz dieser Klasse zu haben
     // Dadurch würden alle Klassen, die einen Container nutzen, auf den SELBEN Container zugreifen
     private PersistenceStrategy<Member> strategy;
